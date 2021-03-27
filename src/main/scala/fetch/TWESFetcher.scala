@@ -7,7 +7,7 @@ object TWESFetcher extends BaseFetch {
 
   val TWSE_BASE_URL = "http://www.twse.com.tw/"
 
-  override def fetch(year: Int, month: Int, sid: Int, retry: Int = 5, sleepTime: Int = 3000): List[Map[String,Any]] = {
+  override def fetch(year: Int, month: Int, sid: Int, retry: Int = 5, sleepTime: Int = 5000): List[Map[String,Any]] = {
 
     val dateList = generateDateList(year, month)
 
@@ -40,8 +40,6 @@ object TWESFetcher extends BaseFetch {
 
 
   override def preProcessData(fetchHtml: List[List[String]]): List[Map[String,Any]] = {
-
-//    val stockDataList = scala.collection.mutable.ListBuffer.empty[Map[String,Any]]
 
     val typeCorrectList = fetchHtml
       .map(data => data

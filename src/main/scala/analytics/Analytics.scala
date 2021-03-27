@@ -19,11 +19,16 @@ class Analytics {
   }
 
 
-  def RSV(closePriceList: List[Double], highPriceList: List[Double], lowPriceList: List[Double], days: Int = 9): List[Double] = {
-    val RSV = for (close <- closePriceList; high <- 9 to highPriceList.length; low <- 9 to lowPriceList.length) yield {
-      (close - lowPriceList.slice(low, low + days).min) / (highPriceList.slice(high, high + days).max - lowPriceList.slice(low, low + days).min)
+  def RSV(closePriceList: List[Double], highPriceList: List[Double], lowPriceList: List[Double], rsvDays: Int = 9): List[Double] = {
+    @tailrec
+    def auxRSV(closePriceList: List[Double], highPriceList: List[Double], lowPriceList: List[Double], RSVList: List[Double]): List[Double] = {
+      if(closePriceList.isEmpty) RSVList
+      else {
+        val RSVvalue = (closePriceList.head - lowPriceList.slice(0, rsvDays).min) / (highPriceList.slice(0, rsvDays).max - lowPriceList.slice(0, rsvDays).min)
+        auxRSV(closePriceList.tail, highPriceList.tail, lowPriceList.tail, RSVList :+ RSVvalue)
+      }
     }
-    RSV
+    auxRSV(closePriceList.slice(rsvDays - 1, closePriceList.length), highPriceList, lowPriceList, List())
   }
 
   def kValue(closePriceList: List[Double], highPriceList: List[Double], lowPriceList: List[Double]): List[Double] = {

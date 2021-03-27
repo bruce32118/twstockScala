@@ -3,13 +3,18 @@ import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 
 class Analytics {
+
+  def convertDecimal(number: Double, decimalNumber: Int=4): Double = {
+    BigDecimal(number)
+      .setScale(decimalNumber, BigDecimal.RoundingMode.HALF_UP).toDouble
+  }
+
   def movingAverage(priceList: List[Double], days: Double): List[Double] = {
     @tailrec
     def auxMoving(priceList: List[Double], remainNumber: Double, days: Double, result: ListBuffer[Double]): List[Double] = {
       if(remainNumber > 0) {
         val averageNumber = priceList.takeRight(days.toInt).sum / days
-        result += BigDecimal(averageNumber)
-          .setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+        result += convertDecimal(averageNumber)
         auxMoving(priceList.dropRight(1), remainNumber-1, days, result)
       } else {
         result.toList.reverse
@@ -38,10 +43,18 @@ class Analytics {
 
     val kList = for (rsv <- rsvValue) yield {
       kListBuffer += kListBuffer.takeRight(1).head * 2 / 3 + (rsv / 3)
-      kListBuffer.takeRight(1).head
+      convertDecimal(kListBuffer.takeRight(1).head)
     }
-
     kList
   }
 
+  def dValue(kValueList: List[Double]): List[Double] = {
+
+    val dListBuffer = ListBuffer(0.0)
+    val dList = for( kValue <- kValueList) yield {
+      dListBuffer += dListBuffer.takeRight(1).head * 2 / 3 + kValue / 3
+      convertDecimal(dListBuffer.takeRight(1).head)
+    }
+  dList
+}
 }

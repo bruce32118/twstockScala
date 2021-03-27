@@ -9,23 +9,22 @@ import java.time.{ZoneId, ZonedDateTime}
 class Stock(val sid: Int, val initial_fetch: Boolean) extends Analytics {
 
   private var _data : List[Map[String, Any]] = initial_fetch match {
-    case true => {
+    case true =>
       val date = ZonedDateTime.now(ZoneId.of("UTC")).minusMonths(1)
       fetch(date.getYear, date.getMonthValue)
-    }
     case false => List()
   }
 
   def data: List[Map[String, Any]] = _data
 
-  def date: List[String] = _data.map(data => data.get("date")).filter(_ != None).map(_.get.toString)
-  def capacity: List[Double] = _data.map(data => data.get("capacity")).filter(_ != None).map(_.get.toString.toDouble)
-  def turnover: List[Double] = _data.map(data => data.get("turnover")).filter(_ != None).map(_.get.toString.toDouble)
-  def open: List[Double] = _data.map(data => data.get("open")).filter(_ != None).map(_.get.toString.toDouble)
-  def high: List[Double] = _data.map(data => data.get("high")).filter(_ != None).map(_.get.toString.toDouble)
-  def low: List[Double] = _data.map(data => data.get("low")).filter(_ != None).map(_.get.toString.toDouble)
-  def price: List[Double] = _data.map(data => data.get("close")).filter(_ != None).map(_.get.toString.toDouble)
-  def transaction: List[Double] = _data.map(data => data.get("transaction")).filter(_ != None).map(_.get.toString.toDouble)
+  def date: List[String] = _data.map(data => data.getOrElse("date", "error")).filter(_ != "error").map(_.toString)
+  def capacity: List[Double] = _data.map(data => data.getOrElse("capacity", "error")).filter(_ != "error").map(_.toString.toDouble)
+  def turnover: List[Double] = _data.map(data => data.getOrElse("turnover", "error")).filter(_ != "error").map(_.toString.toDouble)
+  def open: List[Double] = _data.map(data => data.getOrElse("open", "error")).filter(_ != "error").map(_.toString.toDouble)
+  def high: List[Double] = _data.map(data => data.getOrElse("high", "error")).filter(_ != "error").map(_.toString.toDouble)
+  def low: List[Double] = _data.map(data => data.getOrElse("low", "error")).filter(_ != "error").map(_.toString.toDouble)
+  def price: List[Double] = _data.map(data => data.getOrElse("close", "error")).filter(_ != "error").map(_.toString.toDouble)
+  def transaction: List[Double] = _data.map(data => data.getOrElse("transaction", "error")).filter(_ != "error").map(_.toString.toDouble)
   def fetch(year: Int, month: Int): List[Map[String, Any]] = TWESFetcher.fetch(year, month, sid)
 
 }

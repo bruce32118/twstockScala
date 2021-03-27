@@ -10,10 +10,13 @@ abstract class BaseFetch {
       val nowY = nowDate.getYear
       val count = (nowY - year) * 12 + (nowM - month)
       val before = nowDate.minusMonths(count)
-      val finalist = (0 to count).flatMap(x => {
+      val finalist = (0 to count)
+        .flatMap(x => {
           val directDate = before.plusMonths(x)
           List() :+ (directDate.getYear, directDate.getMonthValue)
-                            }).toList
+        })
+        .toList
+
       finalist
     }
   def preProcessData(data: List[List[String]]): List[Map[String,Any]]
